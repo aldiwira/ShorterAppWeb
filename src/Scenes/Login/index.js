@@ -1,52 +1,54 @@
 import React, { Fragment, useState } from "react";
-import styled from "styled-components";
-import { Button, Input, Loader, Dimmer } from "semantic-ui-react";
-import Axios from "axios";
+import { Button, Input, Loader } from "semantic-ui-react";
+import { useHistory } from "react-router-dom";
+import { Api } from "../../Helper/Api";
+import { LStorage, tokenKey, userKey } from "../../Helper/LocalStorage";
+import {
+  LoadingDiv,
+  Title,
+  SecTitle,
+  Content,
+  WrapCenter,
+  Wrapper,
+} from "./LoginStyled";
 
 const Index = () => {
-  const [Username, setUsername] = useState("");
-  const [Password, setPassword] = useState("");
-  const [userError, setuserError] = useState(false);
-  const [passError, setpassError] = useState(false);
+  const [userDatas, setuserDatas] = useState({
+    username: null,
+    password: null,
+  });
+  const [isError, setisError] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [errorMsg, seterrorMsg] = useState("");
+  const history = useHistory();
+
   const onClickLogin = async () => {
+    LStorage.clearAll();
     seterrorMsg("");
     setisLoading(true);
-    setuserError(false);
-    setpassError(false);
-    if (!Username && !Password) {
-      setuserError(true);
-      setpassError(true);
-      setisLoading(false);
-    } else {
-      await Axios({
-        method: "POST",
-        url: "http://127.0.0.1:2000/login",
-        data: {
-          username: Username,
-          password: Password,
-        },
+    setisError(false);
+    await Api.post("/login", userDatas)
+      .then((response) => {
+        const datas = response.data.data;
+        setisLoading(false);
+        LStorage.setItem(userKey, JSON.stringify(datas.account));
+        LStorage.setItem(tokenKey, datas.token);
+        history.push("/");
       })
-        .then((response) => {
-          console.log(response);
-          setisLoading(false);
-        })
-        .catch((error) => {
-          setisLoading(false);
-          const err = error.response.data;
-          const errBdy = err.massage;
-          const errEr = err.errors;
-          if (errBdy) {
-            seterrorMsg(errBdy);
-          } else if (errEr) {
-            errEr.map((val) => {
-              seterrorMsg(val.msg);
-            });
-          }
-        });
-    }
+      .catch((error) => {
+        setisLoading(false);
+        setisError(true);
+        console.log(error.response);
+        const errorUnit = error.response.data.errors;
+        const errorUser = error.response.data.massage;
+        if (errorUser) {
+          seterrorMsg(errorUser);
+        } else if (errorUnit) {
+          seterrorMsg("Please correct your username and password");
+        }
+      });
   };
+
   return (
     <Fragment>
       <Wrapper>
@@ -58,25 +60,26 @@ const Index = () => {
           <SecTitle>Username</SecTitle>
           <Input
             type='text'
-            value={Username}
-            error={userError}
+            value={userDatas.username}
+            error={isError}
             onChange={(event) => {
-              setUsername(event.target.value);
+              setuserDatas({ ...userDatas, username: event.target.value });
             }}
           />
           <SecTitle>Password</SecTitle>
           <Input
             type='password'
-            value={Password}
-            error={passError}
+            value={userDatas.password}
+            error={isError}
             onChange={(event) => {
-              setPassword(event.target.value);
+              setuserDatas({ ...userDatas, password: event.target.value });
             }}
           />
           <WrapCenter>
             <Button
               onClick={onClickLogin.bind(this)}
               size='large'
+              disabled={isLoading}
               color='google plus'>
               Login
             </Button>
@@ -87,74 +90,5 @@ const Index = () => {
     </Fragment>
   );
 };
-
-const Title = styled.h1`
-  text-align: left;
-  color: black;
-  @media only screen and (min-width: 320px) {
-    font-size: 30px;
-  }
-  @media only screen and (min-width: 1024px) {
-    font-size: 50px;
-  }
-`;
-
-const LoadingDiv = styled.div`
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  align-self: center;
-  position: absolute;
-`;
-
-const SecTitle = styled.p`
-  margin-top: 10px;
-  color: black;
-  @media only screen and (min-width: 320px) {
-    font-size: 14px;
-  }
-  @media only screen and (min-width: 1024px) {
-    font-size: 16px;
-  }
-`;
-
-const WrapCenter = styled.div`
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  align-self: center;
-  flex-direction: column;
-  padding: 20px;
-`;
-
-const Content = styled.div`
-  display: flex;
-  position: absolute;
-  flex-direction: column;
-  justify-content: center;
-  background: #efefef;
-  @media only screen and (min-width: 320px) {
-    height: 400px;
-    width: 350px;
-    padding: 25px;
-    border-radius: 25px;
-  }
-  @media only screen and (min-width: 1024px) {
-    height: 500px;
-    width: 450px;
-    padding: 50px;
-    border-radius: 50px;
-  }
-`;
-
-const Wrapper = styled.div`
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  background: #4b7bec;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 export default Index;
