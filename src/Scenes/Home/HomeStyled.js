@@ -11,6 +11,14 @@ const Title = styled.h1`
   }
 `;
 
+const LoadingDiv = styled.div`
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-self: center;
+  position: absolute;
+`;
+
 const SecTitle = styled.p`
   color: black;
   text-align: center;
@@ -57,4 +65,4 @@ const Wrapper = styled.div`
   justify-content: center;
 `;
 
-export { Wrapper, Content, BtnWrap, SecTitle, Title };
+export { Wrapper, Content, BtnWrap, SecTitle, Title, LoadingDiv };

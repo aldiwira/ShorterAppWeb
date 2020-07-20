@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Button, Input, Loader } from "semantic-ui-react";
 import { useHistory } from "react-router-dom";
 import { Api } from "../../Helper/Api";
@@ -13,6 +13,16 @@ import {
 } from "./LoginStyled";
 
 const Index = () => {
+  useEffect(() => {
+    const token = LStorage.getItem(tokenKey);
+    const userDts = LStorage.getItem(userKey);
+    if (token && userDts) {
+      setisLoading(true);
+      setTimeout(() => {
+        history.push("/home");
+      }, 1000);
+    }
+  });
   const [userDatas, setuserDatas] = useState({
     username: null,
     password: null,
@@ -38,7 +48,6 @@ const Index = () => {
       .catch((error) => {
         setisLoading(false);
         setisError(true);
-        console.log(error.response);
         const errorUnit = error.response.data.errors;
         const errorUser = error.response.data.massage;
         if (errorUser) {

@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Home, Login, Register } from "./Scenes";
+import { Home, Login, Register, Main } from "./Scenes";
 
 function App() {
   return (
@@ -14,6 +14,9 @@ function App() {
         </Route>
         <Route exact path='/register'>
           <Register />
+        </Route>
+        <Route exact path='/home'>
+          <Main />
         </Route>
         <Route exact path='*'></Route>
       </Switch>

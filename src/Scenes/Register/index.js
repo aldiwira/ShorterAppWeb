@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import {
   SecTitle,
   Title,
@@ -13,6 +13,16 @@ import { Api } from "../../Helper/Api";
 import { LStorage, tokenKey, userKey } from "../../Helper/LocalStorage";
 
 const Index = () => {
+  useEffect(() => {
+    const token = LStorage.getItem(tokenKey);
+    const userDts = LStorage.getItem(userKey);
+    if (token && userDts) {
+      setisLoading(true);
+      setTimeout(() => {
+        history.push("/home");
+      }, 1000);
+    }
+  });
   const [userdatas, setuserdatas] = useState({
     username: null,
     email: null,
@@ -81,6 +91,7 @@ const Index = () => {
             <Button
               onClick={onClickLogin.bind(this)}
               size='large'
+              disabled={isLoading}
               color='google plus'>
               Register
             </Button>
