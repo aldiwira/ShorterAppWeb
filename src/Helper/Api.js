@@ -1,5 +1,11 @@
 const Axios = require("axios");
 
+const uri = `http://127.0.0.1:2000`;
+
 export const Api = Axios.create({
-  baseURL: `http://127.0.0.1:2000`,
+  baseURL: uri,
+});
+
+export default Axios.create({
+  baseURL: uri,
 });
