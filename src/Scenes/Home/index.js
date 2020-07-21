@@ -19,7 +19,7 @@ const Index = () => {
         history.push("/home");
       }, 1000);
     }
-  });
+  }, []);
 
   const [isLoading, setisLoading] = useState(false);
   const tokenData = LStorage.getItem(tokenKey);

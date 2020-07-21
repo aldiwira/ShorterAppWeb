@@ -7,7 +7,7 @@ const setItem = (key, data) => {
 const getItem = (key) => {
   return localStorage.getItem(key);
 };
-const clearAll = (key) => {
+const clearAll = () => {
   localStorage.clear();
 };
 

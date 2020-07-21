@@ -51,7 +51,7 @@ const Index = (props) => {
             color='secondary'>
             Create Shorter Link
           </Button>
-          <Button variant='contained' color='primary'>
+          <Button onClick={props.onLogout} variant='contained' color='primary'>
             Log Out
           </Button>
         </Toolbar>

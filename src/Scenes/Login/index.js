@@ -22,7 +22,7 @@ const Index = () => {
         history.push("/home");
       }, 1000);
     }
-  });
+  }, []);
   const [userDatas, setuserDatas] = useState({
     username: null,
     password: null,
