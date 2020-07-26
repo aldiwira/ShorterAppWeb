@@ -6,6 +6,7 @@ import {
   IconButton,
   Typography,
   Button,
+  Grid,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import { makeStyles } from "@material-ui/core/styles";
@@ -45,15 +46,21 @@ const Index = (props) => {
           <Typography variant='h6' className={classes.title}>
             My Shorter Link
           </Typography>
-          <Button
-            variant='contained'
-            className={classes.BtnPrimary}
-            color='secondary'>
-            Create Shorter Link
-          </Button>
-          <Button onClick={props.onLogout} variant='contained' color='primary'>
-            Log Out
-          </Button>
+          <Grid>
+            <Button
+              variant='contained'
+              onClick={props.onCreateClick}
+              className={classes.BtnPrimary}
+              color='secondary'>
+              Create Shorter Link
+            </Button>
+            <Button
+              onClick={props.onLogout}
+              variant='contained'
+              color='primary'>
+              Log Out
+            </Button>
+          </Grid>
         </Toolbar>
       </AppBar>
     </div>

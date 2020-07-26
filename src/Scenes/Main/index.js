@@ -19,6 +19,7 @@ const Index = () => {
   const history = useHistory();
   const [linkDatas, setlinkDatas] = useState([]);
   const [isOpenDrawer, setisOpenDrawer] = useState(false);
+  const [isOpenCreateLink, setisOpenCreateLink] = useState(false);
   const getLinkDatas = async () => {
     await Api.get("/shorter/", {
       headers: { Authorization: `Bearer ${token}` },
@@ -53,13 +54,21 @@ const Index = () => {
         onClickMenu={() => {
           setisOpenDrawer(true);
         }}
+        onCreateClick={() => {
+          setisOpenCreateLink(true);
+        }}
         onLogout={doLogout.bind(this)}
       />
       <Drawer
         userDatas={userDatas}
+        tokenDatas={token}
         openDrawer={isOpenDrawer}
         closeDrawer={() => {
           setisOpenDrawer(false);
+        }}
+        openCreateLink={isOpenCreateLink}
+        closeCreateLink={() => {
+          setisOpenCreateLink(false);
         }}
       />
       <Mainview linkdatas={linkDatas} />

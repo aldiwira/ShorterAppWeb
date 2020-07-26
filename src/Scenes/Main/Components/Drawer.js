@@ -1,5 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import uniqid from "uniqid";
 import myColors from "../../../Config/Colors";
+import { Api } from "../../../Helper/Api";
 import { AccountBox, Lock } from "@material-ui/icons";
 import {
   Drawer,
@@ -9,6 +11,8 @@ import {
   ListItemIcon,
   Divider,
   Typography,
+  TextField,
+  Button,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -30,10 +34,38 @@ const useStyles = makeStyles((theme) => ({
 
 const Index = (props) => {
   useEffect(() => {
-    console.log(userDatas);
+    setshorterDatas({ ...shorterDatas, short_link: uniqid.time() });
+    console.log(shorterDatas);
   }, []);
+  const [shorterDatas, setshorterDatas] = useState({
+    full_link: null,
+    short_link: null,
+  });
+  const [errorDatas, seterrorDatas] = useState(null);
   const classes = useStyles();
+  let token = props.tokenDatas;
   const userDatas = JSON.parse(props.userDatas);
+
+  const doCreate = async () => {
+    console.log(shorterDatas);
+    await Api.post("/shorter/create", shorterDatas, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((response) => {
+        window.location.reload(false);
+      })
+      .catch((errors) => {
+        const errorUnit = errors.response.data.errors;
+        const errorUser = errors.response.data.massage;
+        if (errorUser) {
+          console.log(errorUser);
+        } else if (errorUnit) {
+          seterrorDatas(errorUnit[0].msg);
+          console.log(errorUnit[0]);
+        }
+      });
+  };
+
   return (
     <div className={classes.root}>
       <Drawer
@@ -69,6 +101,69 @@ const Index = (props) => {
             <ListItemText primary='Change password' />
           </ListItem>
         </List>
+      </Drawer>
+      {/* for create link */}
+      <Drawer
+        anchor='right'
+        open={props.openCreateLink}
+        onClose={props.closeCreateLink}>
+        <List>
+          <ListItem>
+            <Typography className={classes.title} variant='h4'>
+              Create Link
+            </Typography>
+          </ListItem>
+        </List>
+        <Divider />
+        <form autoComplete='off'>
+          <List>
+            <ListItem>
+              <TextField
+                fullWidth
+                value={shorterDatas.full_link}
+                onChange={(event) => {
+                  setshorterDatas({
+                    ...shorterDatas,
+                    full_link: event.target.value,
+                  });
+                }}
+                label='Full Link'
+                variant='outlined'
+              />
+            </ListItem>
+            <ListItem>
+              <TextField
+                fullWidth
+                value={shorterDatas.short_link}
+                onChange={(event) => {
+                  setshorterDatas({
+                    ...shorterDatas,
+                    short_link: event.target.value,
+                  });
+                }}
+                label='Short Link'
+                variant='outlined'
+              />
+            </ListItem>
+          </List>
+          <Divider />
+          <List>
+            <ListItem>
+              <Button
+                fullWidth
+                onClick={doCreate.bind(this)}
+                color='primary'
+                variant='contained'>
+                Submit
+              </Button>
+            </ListItem>
+            <ListItem>
+              <Typography variant='p'>
+                {errorDatas ? errorDatas : "Stack Here?"}
+              </Typography>
+            </ListItem>
+          </List>
+        </form>
       </Drawer>
     </div>
   );
