@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import myColors from "../../../Config/Colors";
 import { AccountBox, Lock } from "@material-ui/icons";
 import {
@@ -29,7 +29,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Index = (props) => {
+  useEffect(() => {
+    console.log(userDatas);
+  }, []);
   const classes = useStyles();
+  const userDatas = JSON.parse(props.userDatas);
   return (
     <div className={classes.root}>
       <Drawer
@@ -44,10 +48,10 @@ const Index = (props) => {
             </Typography>
           </ListItem>
           <ListItem>
-            <Typography variant='h5'>Aldi Wirawan</Typography>
+            <Typography variant='h5'>{userDatas.username}</Typography>
           </ListItem>
           <ListItem>
-            <Typography variant='p'>aldiwira@gmaail.com</Typography>
+            <Typography variant='p'>{userDatas.email}</Typography>
           </ListItem>
         </List>
         <Divider />

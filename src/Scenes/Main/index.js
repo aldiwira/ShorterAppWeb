@@ -56,6 +56,7 @@ const Index = () => {
         onLogout={doLogout.bind(this)}
       />
       <Drawer
+        userDatas={userDatas}
         openDrawer={isOpenDrawer}
         closeDrawer={() => {
           setisOpenDrawer(false);
