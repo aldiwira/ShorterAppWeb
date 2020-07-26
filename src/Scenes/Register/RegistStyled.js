@@ -52,7 +52,7 @@ const Content = styled.div`
     border-radius: 20px;
   }
   @media only screen and (min-width: 1024px) {
-    height: 500px;
+    height: 550px;
     width: 500px;
     padding: 40px;
     border-radius: 50px;

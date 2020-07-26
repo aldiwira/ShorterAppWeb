@@ -30,6 +30,22 @@ const Index = () => {
         console.log(errors);
       });
   };
+  const doLogout = async () => {
+    await Api.post(
+      "/logout/",
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+      .then((response) => {
+        LStorage.clearAll();
+        history.push("/");
+      })
+      .catch((errors) => {
+        console.log(errors.response);
+      });
+  };
 
   return (
     <div>
@@ -37,10 +53,7 @@ const Index = () => {
         onClickMenu={() => {
           setisOpenDrawer(true);
         }}
-        onLogout={() => {
-          LStorage.clearAll();
-          history.push("/");
-        }}
+        onLogout={doLogout.bind(this)}
       />
       <Drawer
         openDrawer={isOpenDrawer}
