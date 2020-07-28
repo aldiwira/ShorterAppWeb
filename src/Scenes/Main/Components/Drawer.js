@@ -13,6 +13,7 @@ import {
   Typography,
   TextField,
   Button,
+  Container,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -68,103 +69,106 @@ const Index = (props) => {
 
   return (
     <div className={classes.root}>
-      <Drawer
-        anchor='left'
-        classes={{ paper: classes.Drawer }}
-        open={props.openDrawer}
-        onClose={props.closeDrawer}>
-        <List>
-          <ListItem>
-            <Typography className={classes.title} variant='h4'>
-              My Shorter Link
-            </Typography>
-          </ListItem>
-          <ListItem>
-            <Typography variant='h5'>{userDatas.username}</Typography>
-          </ListItem>
-          <ListItem>
-            <Typography variant='p'>{userDatas.email}</Typography>
-          </ListItem>
-        </List>
-        <Divider />
-        <List>
-          <ListItem button>
-            <ListItemIcon>
-              <AccountBox className={classes.icon} />
-            </ListItemIcon>
-            <ListItemText primary='Change Account information' />
-          </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <Lock className={classes.icon} />
-            </ListItemIcon>
-            <ListItemText primary='Change password' />
-          </ListItem>
-        </List>
-      </Drawer>
-      {/* for create link */}
-      <Drawer
-        anchor='right'
-        open={props.openCreateLink}
-        onClose={props.closeCreateLink}>
-        <List>
-          <ListItem>
-            <Typography className={classes.title} variant='h4'>
-              Create Link
-            </Typography>
-          </ListItem>
-        </List>
-        <Divider />
-        <form autoComplete='off'>
+      <Container>
+        <Drawer
+          anchor='left'
+          classes={{ paper: classes.Drawer }}
+          open={props.openDrawer}
+          onClose={props.closeDrawer}>
           <List>
             <ListItem>
-              <TextField
-                fullWidth
-                value={shorterDatas.full_link}
-                onChange={(event) => {
-                  setshorterDatas({
-                    ...shorterDatas,
-                    full_link: event.target.value,
-                  });
-                }}
-                label='Full Link'
-                variant='outlined'
-              />
+              <Typography className={classes.title} variant='h4'>
+                My Shorter Link
+              </Typography>
             </ListItem>
             <ListItem>
-              <TextField
-                fullWidth
-                value={shorterDatas.short_link}
-                onChange={(event) => {
-                  setshorterDatas({
-                    ...shorterDatas,
-                    short_link: event.target.value,
-                  });
-                }}
-                label='Short Link'
-                variant='outlined'
-              />
+              <Typography variant='h5'>{userDatas.username}</Typography>
+            </ListItem>
+            <ListItem>
+              <Typography variant='p'>{userDatas.email}</Typography>
             </ListItem>
           </List>
           <Divider />
           <List>
-            <ListItem>
-              <Button
-                fullWidth
-                onClick={doCreate.bind(this)}
-                color='primary'
-                variant='contained'>
-                Submit
-              </Button>
+            <ListItem button>
+              <ListItemIcon>
+                <AccountBox className={classes.icon} />
+              </ListItemIcon>
+              <ListItemText primary='Change Account information' />
             </ListItem>
+            <ListItem button>
+              <ListItemIcon>
+                <Lock className={classes.icon} />
+              </ListItemIcon>
+              <ListItemText primary='Change password' />
+            </ListItem>
+          </List>
+        </Drawer>
+
+        {/* for create link */}
+        <Drawer
+          anchor='right'
+          open={props.openCreateLink}
+          onClose={props.closeCreateLink}>
+          <List>
             <ListItem>
-              <Typography variant='p'>
-                {errorDatas ? errorDatas : "Stack Here?"}
+              <Typography className={classes.title} variant='h4'>
+                Create Link
               </Typography>
             </ListItem>
           </List>
-        </form>
-      </Drawer>
+          <Divider />
+          <form autoComplete='off'>
+            <List>
+              <ListItem>
+                <TextField
+                  fullWidth
+                  value={shorterDatas.full_link}
+                  onChange={(event) => {
+                    setshorterDatas({
+                      ...shorterDatas,
+                      full_link: event.target.value,
+                    });
+                  }}
+                  label='Full Link'
+                  variant='outlined'
+                />
+              </ListItem>
+              <ListItem>
+                <TextField
+                  fullWidth
+                  value={shorterDatas.short_link}
+                  onChange={(event) => {
+                    setshorterDatas({
+                      ...shorterDatas,
+                      short_link: event.target.value,
+                    });
+                  }}
+                  label='Short Link'
+                  variant='outlined'
+                />
+              </ListItem>
+            </List>
+            <Divider />
+            <List>
+              <ListItem>
+                <Button
+                  fullWidth
+                  onClick={doCreate.bind(this)}
+                  color='primary'
+                  variant='contained'>
+                  Submit
+                </Button>
+              </ListItem>
+              <ListItem>
+                <Typography variant='p'>
+                  {errorDatas ? errorDatas : "Stack Here?"}
+                </Typography>
+              </ListItem>
+            </List>
+          </form>
+        </Drawer>
+      </Container>
     </div>
   );
 };

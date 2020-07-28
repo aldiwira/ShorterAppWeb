@@ -11,73 +11,64 @@ import {
   Container,
   Paper,
   Typography,
-  Divider,
+  Backdrop,
+  CircularProgress,
 } from "@material-ui/core";
+import EditBar from "./DrawerEdit";
 
 const Index = (props) => {
   const [selectedDatas, setselectedDatas] = useState({});
+  const [isOpenEdit, setisOpenEdit] = useState(false);
   const classes = useStyles();
   let linkdatas = props.linkdatas;
+  let isLoading = props.isLoadingContent;
   return (
-    <ThemeProvider theme={theme}>
-      <Grid container className={classes.root}>
-        <Grid item xs={6}>
-          <Container>
-            <Typography className={classes.title} variant='h4'>
-              Your Shorter Link
-            </Typography>
-            <List>
-              {linkdatas.map((val) => {
-                return (
-                  <ListItem
-                    onClick={() => {
-                      setselectedDatas(val);
-                    }}
-                    button>
-                    <Paper className={classes.ListIte}>
-                      <Typography className={classes.title} variant='h4'>
-                        {val.full_link}
-                      </Typography>
-                      <Typography className={classes.title} variant='h6'>
-                        https://short.link/{val.short_link}
-                      </Typography>
-                    </Paper>
-                  </ListItem>
-                );
-              })}
-            </List>
-          </Container>
+    <Grid container className={classes.root}>
+      <Backdrop className={classes.backdrop} open={isLoading}>
+        <CircularProgress color='inherit' />
+      </Backdrop>
+      <EditBar
+        selectedData={selectedDatas}
+        openEdit={isOpenEdit}
+        closeEdit={() => {
+          setselectedDatas({});
+          setisOpenEdit(false);
+        }}
+      />
+      <Container>
+        <Typography className={classes.title} variant='h4'>
+          Your Shorter Link
+        </Typography>
+        <Grid item>
+          <List>
+            {linkdatas.map((val) => {
+              return (
+                <ListItem
+                  onClick={() => {
+                    setselectedDatas(val);
+                    setisOpenEdit(true);
+                  }}
+                  button>
+                  <Paper className={classes.ListIte}>
+                    <Typography variant='h4'>{val.full_link}</Typography>
+                    <Typography variant='h6'>
+                      https://short.link/{val.short_link}
+                    </Typography>
+                  </Paper>
+                </ListItem>
+              );
+            })}
+          </List>
         </Grid>
-        <Grid item xs={6}>
-          <Container>
-            <Paper className={classes.paper}>
-              <Typography className={classes.title} variant='h4'>
-                Information
-              </Typography>
-              <Divider />
-              <Typography variant='h6'>
-                url : {selectedDatas.full_link}
-              </Typography>
-              <Typography variant='h6'>
-                https://short.link/{selectedDatas.short_link}
-              </Typography>
-              <Typography variant='h6'>{}</Typography>
-              <Divider />
-              <Typography variant='h6'>
-                Total clicked link : {selectedDatas.click_count}
-              </Typography>
-            </Paper>
-          </Container>
-        </Grid>
-      </Grid>
-    </ThemeProvider>
+      </Container>
+    </Grid>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    padding: 20,
+    padding: 10,
   },
   paper: {
     padding: theme.spacing(2),
@@ -91,21 +82,12 @@ const useStyles = makeStyles((theme) => ({
   ListIte: {
     height: "100%",
     width: "100%",
-    padding: 10,
+    padding: 15,
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
   },
 }));
 
-const theme = createMuiTheme();
-theme.typography.h4 = {
-  fontSize: "1.2rem",
-  "@media (min-width:600px)": {
-    fontSize: "1.5rem",
-  },
-  "@media (min-width:320px)": {
-    fontSize: "1rem",
-  },
-  [theme.breakpoints.up("md")]: {
-    fontSize: "2rem",
-  },
-};
 export default Index;

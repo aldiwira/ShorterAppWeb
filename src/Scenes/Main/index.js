@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AppBar from "./Components/AppBar";
 import Drawer from "./Components/Drawer";
 import Mainview from "./Components/Main";
+import SnackBar from "./Components/SnackBar";
 import { useHistory } from "react-router-dom";
 import Api from "../../Helper/Api";
 import { LStorage, userKey, tokenKey } from "../../Helper/LocalStorage";
@@ -10,6 +11,7 @@ const Index = () => {
   const token = LStorage.getItem(tokenKey);
   const userDatas = LStorage.getItem(userKey);
   useEffect(() => {
+    setisLoadingContent(true);
     if (!token) {
       history.push("/");
     } else {
@@ -20,18 +22,29 @@ const Index = () => {
   const [linkDatas, setlinkDatas] = useState([]);
   const [isOpenDrawer, setisOpenDrawer] = useState(false);
   const [isOpenCreateLink, setisOpenCreateLink] = useState(false);
+  const [isLoadingContent, setisLoadingContent] = useState(false);
+  const [isOpenSnack, setisOpenSnack] = useState(false);
+  const [MassageSnack, setMassageSnack] = useState(null);
+
   const getLinkDatas = async () => {
     await Api.get("/shorter/", {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        setlinkDatas(response.data.data);
+        setTimeout(() => {
+          setlinkDatas(response.data.data);
+          setisLoadingContent(false);
+        }, 1000);
       })
       .catch((errors) => {
-        console.log(errors);
+        setisOpenSnack(true);
+        let error = errors.response.data.massage;
+        setMassageSnack(error);
       });
   };
+
   const doLogout = async () => {
+    setisLoadingContent(true);
     await Api.post(
       "/logout/",
       {},
@@ -40,11 +53,16 @@ const Index = () => {
       }
     )
       .then((response) => {
-        LStorage.clearAll();
-        history.push("/");
+        setTimeout(() => {
+          setisLoadingContent(false);
+          LStorage.clearAll();
+          history.push("/");
+        }, 1000);
       })
       .catch((errors) => {
-        console.log(errors.response);
+        setisOpenSnack(true);
+        let error = errors.response.data.massage;
+        setMassageSnack(error);
       });
   };
 
@@ -71,7 +89,12 @@ const Index = () => {
           setisOpenCreateLink(false);
         }}
       />
-      <Mainview linkdatas={linkDatas} />
+      <SnackBar
+        openSnack={isOpenSnack}
+        closeSnack={() => setisOpenSnack(false)}
+        massageSnack={MassageSnack}
+      />
+      <Mainview linkdatas={linkDatas} isLoadingContent={isLoadingContent} />
     </div>
   );
 };

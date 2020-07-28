@@ -52,7 +52,7 @@ const Index = (props) => {
               onClick={props.onCreateClick}
               className={classes.BtnPrimary}
               color='secondary'>
-              Create Shorter Link
+              Create
             </Button>
             <Button
               onClick={props.onLogout}
