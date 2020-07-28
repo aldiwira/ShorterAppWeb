@@ -44,7 +44,7 @@ const Index = (props) => {
             <MenuIcon />
           </IconButton>
           <Typography variant='h6' className={classes.title}>
-            My Shorter Link
+            Home
           </Typography>
           <Grid>
             <Button

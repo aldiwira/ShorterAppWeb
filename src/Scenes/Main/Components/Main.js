@@ -3,6 +3,7 @@ import {
   makeStyles,
   createMuiTheme,
   ThemeProvider,
+  responsiveFontSizes,
 } from "@material-ui/core/styles";
 import {
   Grid,
@@ -23,47 +24,52 @@ const Index = (props) => {
   let linkdatas = props.linkdatas;
   let isLoading = props.isLoadingContent;
   return (
-    <Grid container className={classes.root}>
-      <Backdrop className={classes.backdrop} open={isLoading}>
-        <CircularProgress color='inherit' />
-      </Backdrop>
-      <EditBar
-        selectedData={selectedDatas}
-        openEdit={isOpenEdit}
-        closeEdit={() => {
-          setselectedDatas({});
-          setisOpenEdit(false);
-        }}
-      />
-      <Container>
-        <Typography className={classes.title} variant='h4'>
-          Your Shorter Link
-        </Typography>
-        <Grid item>
-          <List>
-            {linkdatas.map((val) => {
-              return (
-                <ListItem
-                  onClick={() => {
-                    setselectedDatas(val);
-                    setisOpenEdit(true);
-                  }}
-                  button>
-                  <Paper className={classes.ListIte}>
-                    <Typography variant='h4'>{val.full_link}</Typography>
-                    <Typography variant='h6'>
-                      https://short.link/{val.short_link}
-                    </Typography>
-                  </Paper>
-                </ListItem>
-              );
-            })}
-          </List>
-        </Grid>
-      </Container>
-    </Grid>
+    <ThemeProvider theme={theme}>
+      <Grid container className={classes.root}>
+        <Backdrop className={classes.backdrop} open={isLoading}>
+          <CircularProgress color='inherit' />
+        </Backdrop>
+        <EditBar
+          selectedData={selectedDatas}
+          openEdit={isOpenEdit}
+          closeEdit={() => {
+            setselectedDatas({});
+            setisOpenEdit(false);
+          }}
+        />
+        <Container>
+          <Typography className={classes.title} variant='h4'>
+            Your Shorter Link
+          </Typography>
+          <Grid item>
+            <List>
+              {linkdatas.map((val) => {
+                return (
+                  <ListItem
+                    onClick={() => {
+                      setselectedDatas(val);
+                      setisOpenEdit(true);
+                    }}
+                    button>
+                    <Paper className={classes.ListIte}>
+                      <Typography variant='h4'>{val.full_link}</Typography>
+                      <Typography variant='h6'>
+                        https://short.link/{val.short_link}
+                      </Typography>
+                    </Paper>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Grid>
+        </Container>
+      </Grid>
+    </ThemeProvider>
   );
 };
+
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme);
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,7 +88,8 @@ const useStyles = makeStyles((theme) => ({
   ListIte: {
     height: "100%",
     width: "100%",
-    padding: 15,
+    padding: 10,
+    margin: 5,
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,

@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from "react";
+import {
+  createMuiTheme,
+  ThemeProvider,
+  responsiveFontSizes,
+} from "@material-ui/core/styles";
 import AppBar from "./Components/AppBar";
 import Drawer from "./Components/Drawer";
 import Mainview from "./Components/Main";
@@ -67,36 +72,41 @@ const Index = () => {
   };
 
   return (
-    <div>
-      <AppBar
-        onClickMenu={() => {
-          setisOpenDrawer(true);
-        }}
-        onCreateClick={() => {
-          setisOpenCreateLink(true);
-        }}
-        onLogout={doLogout.bind(this)}
-      />
-      <Drawer
-        userDatas={userDatas}
-        tokenDatas={token}
-        openDrawer={isOpenDrawer}
-        closeDrawer={() => {
-          setisOpenDrawer(false);
-        }}
-        openCreateLink={isOpenCreateLink}
-        closeCreateLink={() => {
-          setisOpenCreateLink(false);
-        }}
-      />
-      <SnackBar
-        openSnack={isOpenSnack}
-        closeSnack={() => setisOpenSnack(false)}
-        massageSnack={MassageSnack}
-      />
-      <Mainview linkdatas={linkDatas} isLoadingContent={isLoadingContent} />
-    </div>
+    <ThemeProvider theme={theme}>
+      <div>
+        <AppBar
+          onClickMenu={() => {
+            setisOpenDrawer(true);
+          }}
+          onCreateClick={() => {
+            setisOpenCreateLink(true);
+          }}
+          onLogout={doLogout.bind(this)}
+        />
+        <Drawer
+          userDatas={userDatas}
+          tokenDatas={token}
+          openDrawer={isOpenDrawer}
+          closeDrawer={() => {
+            setisOpenDrawer(false);
+          }}
+          openCreateLink={isOpenCreateLink}
+          closeCreateLink={() => {
+            setisOpenCreateLink(false);
+          }}
+        />
+        <SnackBar
+          openSnack={isOpenSnack}
+          closeSnack={() => setisOpenSnack(false)}
+          massageSnack={MassageSnack}
+        />
+        <Mainview linkdatas={linkDatas} isLoadingContent={isLoadingContent} />
+      </div>
+    </ThemeProvider>
   );
 };
+
+let theme = createMuiTheme();
+theme = responsiveFontSizes(theme);
 
 export default Index;
