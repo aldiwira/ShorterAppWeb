@@ -12,10 +12,11 @@ import {
   Container,
   Paper,
   Typography,
-  Backdrop,
-  CircularProgress,
 } from "@material-ui/core";
 import EditBar from "./DrawerEdit";
+import Loader from "./Loader";
+import { uri } from "../../../Helper/Api";
+import { LStorage, tokenKey } from "../../../Helper/LocalStorage";
 
 const Index = (props) => {
   const [selectedDatas, setselectedDatas] = useState({});
@@ -26,9 +27,7 @@ const Index = (props) => {
   return (
     <ThemeProvider theme={theme}>
       <Grid container className={classes.root}>
-        <Backdrop className={classes.backdrop} open={isLoading}>
-          <CircularProgress color='inherit' />
-        </Backdrop>
+        <Loader isLoading={isLoading} />
         <EditBar
           selectedData={selectedDatas}
           openEdit={isOpenEdit}
@@ -36,6 +35,7 @@ const Index = (props) => {
             setselectedDatas({});
             setisOpenEdit(false);
           }}
+          fetchLink={props.fetchLink}
         />
         <Container>
           <Typography className={classes.title} variant='h4'>
@@ -54,7 +54,10 @@ const Index = (props) => {
                     <Paper className={classes.ListIte}>
                       <Typography variant='h4'>{val.full_link}</Typography>
                       <Typography variant='h6'>
-                        https://short.link/{val.short_link}
+                        {uri}/{val.short_link}
+                      </Typography>
+                      <Typography variant='h7'>
+                        Total visited : {val.click_count}
                       </Typography>
                     </Paper>
                   </ListItem>
@@ -88,12 +91,8 @@ const useStyles = makeStyles((theme) => ({
   ListIte: {
     height: "100%",
     width: "100%",
-    padding: 10,
+    padding: "15px",
     margin: 5,
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
   },
 }));
 

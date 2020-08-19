@@ -51,13 +51,13 @@ const Index = (props) => {
               variant='contained'
               onClick={props.onCreateClick}
               className={classes.BtnPrimary}
-              color='secondary'>
+              color='primary'>
               Create
             </Button>
             <Button
               onClick={props.onLogout}
               variant='contained'
-              color='primary'>
+              color='secondary'>
               Log Out
             </Button>
           </Grid>

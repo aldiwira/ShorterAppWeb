@@ -13,16 +13,21 @@ import Api from "../../Helper/Api";
 import { LStorage, userKey, tokenKey } from "../../Helper/LocalStorage";
 
 const Index = () => {
-  const token = LStorage.getItem(tokenKey);
-  const userDatas = LStorage.getItem(userKey);
   useEffect(() => {
     setisLoadingContent(true);
     if (!token) {
-      history.push("/");
+      setMassageSnack("Redirect to login page");
+      setisOpenSnack(true);
+      setTimeout(() => {
+        history.push("/login");
+      }, 1000);
     } else {
       getLinkDatas();
     }
-  }, [token]);
+  }, []);
+
+  const token = LStorage.getItem(tokenKey);
+  const userDatas = LStorage.getItem(userKey);
   const history = useHistory();
   const [linkDatas, setlinkDatas] = useState([]);
   const [isOpenDrawer, setisOpenDrawer] = useState(false);
@@ -32,6 +37,7 @@ const Index = () => {
   const [MassageSnack, setMassageSnack] = useState(null);
 
   const getLinkDatas = async () => {
+    setisLoadingContent(true);
     await Api.get("/shorter/", {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -42,9 +48,10 @@ const Index = () => {
         }, 1000);
       })
       .catch((errors) => {
-        setisOpenSnack(true);
-        let error = errors.response.data.massage;
-        setMassageSnack(error);
+        if (errors.request) {
+          setMassageSnack("Can't connect to database");
+          setisOpenSnack(true);
+        }
       });
   };
 
@@ -90,6 +97,7 @@ const Index = () => {
           closeDrawer={() => {
             setisOpenDrawer(false);
           }}
+          fetchLink={getLinkDatas.bind(this)}
           openCreateLink={isOpenCreateLink}
           closeCreateLink={() => {
             setisOpenCreateLink(false);
@@ -100,7 +108,11 @@ const Index = () => {
           closeSnack={() => setisOpenSnack(false)}
           massageSnack={MassageSnack}
         />
-        <Mainview linkdatas={linkDatas} isLoadingContent={isLoadingContent} />
+        <Mainview
+          linkdatas={linkDatas}
+          fetchLink={getLinkDatas.bind(this)}
+          isLoadingContent={isLoadingContent}
+        />
       </div>
     </ThemeProvider>
   );

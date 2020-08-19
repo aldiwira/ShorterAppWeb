@@ -10,26 +10,61 @@ import {
   Container,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import SnackBar from "./SnackBar";
+import Api, { uri } from "../../../Helper/Api";
+import { LStorage, tokenKey } from "../../../Helper/LocalStorage";
+
+const clipboardy = require("clipboardy");
 
 const Index = (props) => {
   let datasLink = props.selectedData;
-  const initValue = {
-    _id: null,
-    full_link: null,
-    short_link: null,
-    owner: null,
+  const token = LStorage.getItem(tokenKey);
+  useEffect(() => {
+    setlinkData(datasLink);
+  }, [datasLink]);
+
+  const [linkData, setlinkData] = useState({});
+  const [isLoading, setisLoading] = useState(false);
+  const [isOpenSnack, setisOpenSnack] = useState(false);
+  const [MassageSnack, setMassageSnack] = useState(null);
+
+  const onEditClick = async () => {
+    setisLoading(true);
+    console.log(linkData);
+    await Api.put(
+      `shorter/${linkData._id}/update`,
+      {
+        full_link: linkData.full_link,
+        short_link: linkData.short_link,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    )
+      .then((response) => {
+        setisLoading(false);
+        props.fetchLink();
+        props.closeEdit();
+      })
+      .catch((errors) => {
+        setisLoading(false);
+      });
   };
-  const [linkData, setlinkData] = useState(initValue);
 
   const classes = useStyles();
   return (
     <div className={classes.root}>
+      <SnackBar
+        openSnack={isOpenSnack}
+        closeSnack={() => setisOpenSnack(false)}
+        massageSnack={MassageSnack}
+      />
       <Container>
         <Drawer
           anchor='right'
           open={props.openEdit}
           onClose={() => {
-            setlinkData(initValue);
+            setlinkData({});
             props.closeEdit();
           }}>
           <List>
@@ -43,9 +78,7 @@ const Index = (props) => {
             <ListItem>
               <TextField
                 fullWidth
-                value={
-                  linkData.full_link ? linkData.full_link : datasLink.full_link
-                }
+                value={linkData.full_link}
                 variant='outlined'
                 onChange={(event) => {
                   setlinkData({ ...linkData, full_link: event.target.value });
@@ -56,11 +89,7 @@ const Index = (props) => {
             <ListItem>
               <TextField
                 fullWidth
-                value={
-                  linkData.short_link
-                    ? linkData.short_link
-                    : datasLink.short_link
-                }
+                value={linkData.short_link}
                 variant='outlined'
                 onChange={(event) => {
                   setlinkData({ ...linkData, short_link: event.target.value });
@@ -68,18 +97,46 @@ const Index = (props) => {
                 label='short link'
               />
             </ListItem>
+            <ListItem>
+              <Typography variant='h7'>
+                Total visited : {linkData.click_count}
+              </Typography>
+            </ListItem>
             <Divider />
             <List>
               <ListItem>
-                <Button fullWidth color='primary' variant='contained'>
-                  Edit
+                <Button
+                  fullWidth
+                  onClick={onEditClick.bind(this)}
+                  disabled={isLoading}
+                  color='primary'
+                  variant='contained'>
+                  {isLoading ? "Loading" : "Edit"}
                 </Button>
               </ListItem>
               <ListItem>
-                <Typography variant='p'></Typography>
+                <Button
+                  fullWidth
+                  onClick={() => {
+                    let link = `${uri}/${linkData.short_link}`;
+                    clipboardy.write(link);
+                    setisOpenSnack(true);
+                    setMassageSnack("Success copy to your clipboard");
+                    props.closeEdit();
+                  }}
+                  color='inherit'
+                  variant='outlined'>
+                  Copy Your Short Link
+                </Button>
               </ListItem>
               <ListItem>
-                <Typography variant='p'>{datasLink._id}</Typography>
+                <Button
+                  fullWidth
+                  disabled={isLoading}
+                  color='secondary'
+                  variant='outlined'>
+                  {isLoading ? "Loading" : "Delete"}
+                </Button>
               </ListItem>
             </List>
           </List>

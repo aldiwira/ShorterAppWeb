@@ -36,33 +36,38 @@ const useStyles = makeStyles((theme) => ({
 const Index = (props) => {
   useEffect(() => {
     setshorterDatas({ ...shorterDatas, short_link: uniqid.time() });
-    console.log(shorterDatas);
   }, []);
   const [shorterDatas, setshorterDatas] = useState({
     full_link: null,
     short_link: null,
   });
   const [errorDatas, seterrorDatas] = useState(null);
+  const [isErrorCreate, setisErrorCreate] = useState(false);
   const classes = useStyles();
   let token = props.tokenDatas;
   const userDatas = JSON.parse(props.userDatas);
 
   const doCreate = async () => {
-    console.log(shorterDatas);
+    setisErrorCreate(false);
     await Api.post("/shorter/create", shorterDatas, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((response) => {
-        window.location.reload(false);
+        props.fetchLink();
+        props.closeCreateLink();
+        setshorterDatas({
+          full_link: null,
+          short_link: uniqid.time(),
+        });
       })
       .catch((errors) => {
+        setisErrorCreate(true);
         const errorUnit = errors.response.data.errors;
-        const errorUser = errors.response.data.massage;
+        const errorUser = errors.response.data.data;
         if (errorUser) {
-          console.log(errorUser);
+          seterrorDatas(errorUser);
         } else if (errorUnit) {
           seterrorDatas(errorUnit[0].msg);
-          console.log(errorUnit[0]);
         }
       });
   };
@@ -70,6 +75,7 @@ const Index = (props) => {
   return (
     <div className={classes.root}>
       <Container>
+        {/* Main Drawwer */}
         <Drawer
           anchor='left'
           classes={{ paper: classes.Drawer }}
@@ -130,6 +136,7 @@ const Index = (props) => {
                       full_link: event.target.value,
                     });
                   }}
+                  error={isErrorCreate}
                   label='Full Link'
                   variant='outlined'
                 />
@@ -144,6 +151,7 @@ const Index = (props) => {
                       short_link: event.target.value,
                     });
                   }}
+                  error={isErrorCreate}
                   label='Short Link'
                   variant='outlined'
                 />
