@@ -1,27 +1,21 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Home, Login, Register, Main } from "./Scenes";
+import routes from "./Config/routes";
 
-function App() {
+const renderRoutes = () => {
+  return routes.map((val) => {
+    return (
+      <Route exact key={val.name} path={val.path} component={val.component} />
+    );
+  });
+};
+
+const App = () => {
   return (
     <Router>
-      <Switch>
-        <Route exact path='/'>
-          <Home />
-        </Route>
-        <Route exact path='/login'>
-          <Login />
-        </Route>
-        <Route exact path='/register'>
-          <Register />
-        </Route>
-        <Route exact path='/home'>
-          <Main />
-        </Route>
-        <Route exact path='*'></Route>
-      </Switch>
+      <Switch>{renderRoutes()}</Switch>
     </Router>
   );
-}
+};
 
 export default App;

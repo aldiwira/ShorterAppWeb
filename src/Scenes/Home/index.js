@@ -12,6 +12,7 @@ import {
 import { LStorage, userKey, tokenKey } from "../../Helper/LocalStorage";
 
 const Index = () => {
+  const history = useHistory();
   useEffect(() => {
     if (tokenData && userDatas) {
       setisLoading(true);
@@ -24,25 +25,24 @@ const Index = () => {
   const [isLoading, setisLoading] = useState(false);
   const tokenData = LStorage.getItem(tokenKey);
   const userDatas = LStorage.getItem(userKey);
-  const history = useHistory();
 
   return (
     <Fragment>
       <Wrapper>
         <Content>
           <LoadingDiv>
-            <Loader active={isLoading} inline='centered' />
+            <Loader active={isLoading} inline="centered" />
           </LoadingDiv>
           <Title>Shorter Link</Title>
           <SecTitle>This project was build by @aldiwira</SecTitle>
           <BtnWrap>
-            <Button.Group size='big'>
-              <Link to='/login'>
-                <Button color='google plus'>Login</Button>
+            <Button.Group size="big">
+              <Link to="/login">
+                <Button color="google plus">Login</Button>
               </Link>
               <div style={{ marginLeft: 5, marginRight: 5 }} />
-              <Link to='/register'>
-                <Button color='linkedin'>Register</Button>
+              <Link to="/register">
+                <Button color="linkedin">Register</Button>
               </Link>
             </Button.Group>
           </BtnWrap>
